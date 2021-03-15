@@ -1,0 +1,12 @@
+#!/bin/bash
+rm -fr hotchpotch
+
+git clone git@github.com:jmab20/hotchpotch.git
+
+cd hotchpotch
+
+git pull origin develop
+
+cd utils/automation/
+
+sshpass -p ${SECRET_PASS_2} ssh -o StrictHostKeyChecking=no -o LogLevel=error ${SECRET_USER_2}@127.0.0.1 "bash -s" < ./cronExportMongo.sh

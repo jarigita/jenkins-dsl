@@ -1,0 +1,16 @@
+#!/bin/bash
+rm -rf hotchpotch
+
+git clone git@github.com:jmab20/hotchpotch.git
+
+cd hotchpotch/images/3rdparty/mongodb
+
+#sudo su -c "echo 1 > /proc/sys/vm/drop_caches"
+
+#docker build -m 6g --no-cache --force-rm=true -t hub.docker.com/jmab20/3rdparty_mongo_nb:latest .
+
+#docker push hub.docker.com/jmab20/3rdparty_mongo_nb
+#docker rmi -f hub.docker.com/jmab20/3rdparty_mongo_nb:latest
+
+#docker images -a
+#docker ps -a

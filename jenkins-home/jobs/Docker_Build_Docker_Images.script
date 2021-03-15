@@ -1,0 +1,46 @@
+#!/bin/bash
+cd hotchpotch
+
+RETURN_VALUE=0
+
+
+#Update repo
+git reset --hard HEAD
+git clean -f -d
+
+git pull origin develop
+
+echo ${SECRET_USER} > user
+mv user .user
+echo ${SECRET_PASS} > pass
+mv pass .pass
+
+
+cd utils
+
+#Make script build latest images
+./build_repo.sh -clean -y -debug -tag=${tagName} python-project=${python-project} || RETURN_PARTIAL=$? || true
+RETURN_VALUE=$((RETURN_PARTIAL + $?))
+
+
+date
+
+if [[ $RETURN_VALUE -eq 0 ]]; then
+  #Push simulators, core and portal images
+  for item in $(docker images | grep ${tagName} | grep dockerhub | awk '{print $1}');do docker push $item:${tagName} || true; done
+  date
+fi
+
+
+echo Cleanup
+##Delete docker containers, images and volumes
+
+docker rm $(docker ps -aq) || true
+
+for images in `grep image ../docker-compose.yml | cut -d ":" -f 2` ;do docker rmi -f $images || true; done
+
+docker volume rm $(docker volume ls) || true
+
+df -h
+
+exit $RETURN_VALUE
